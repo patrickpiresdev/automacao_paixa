@@ -4,6 +4,7 @@ import matplotlib.image as mpimg
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 from matplotlib import font_manager as fm
 import os
+import csv
 
 FONT_PROPS = fm.FontProperties(fname='./assets/fonts/Anton-Regular.ttf')
 ROWS       = 5
@@ -12,6 +13,17 @@ COLS       = 7
 RED1       = '#9d0000'
 RED2       = '#b5374e'
 RED3       = '#c86b7c'
+
+def get_data(event):
+    data = []
+    filepath = f'./data/evento{event}.csv'
+    
+    with open(filepath, mode='r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            data.append(row)
+    
+    return data
 
 def make_table(data, start_from=1):
     fig, ax = plt.subplots(figsize=(8,4))
@@ -89,15 +101,8 @@ def make_table(data, start_from=1):
     plt.savefig(f'./resultados/tabela{start_from // 5 + 1}', dpi=300, bbox_inches='tight', transparent=True)
 
 if __name__ == '__main__':
-    data = [
-        {'time': 'vasco', 'doadores': 8, 'apoiadores': 2, 'total presente': 10, 'total pontos': 10},
-        {'time': 'real madrid', 'doadores': 7, 'apoiadores': 3, 'total presente': 10, 'total pontos': 10},
-        {'time': 'flamengo', 'doadores': 5, 'apoiadores': 3, 'total presente': 8, 'total pontos': 8},
-        {'time': 'botafogo', 'doadores': 3, 'apoiadores': 2, 'total presente': 5, 'total pontos': 5},
-        {'time': 'fluminense', 'doadores': 2, 'apoiadores': 1, 'total presente': 3, 'total pontos': 3},
-        {'time': 'palmeiras', 'doadores': 1, 'apoiadores': 1, 'total presente': 2, 'total pontos': 2},
-        {'time': 'potiguar de mossoró', 'doadores': 1, 'apoiadores': 0, 'total presente': 1, 'total pontos': 1},
-    ]
+    event = input('De qual evento voce deseja gerar resultados? ')
+    data = get_data(event)
 
     for i in range(0, len(data), 5):
         make_table(data[i:i+5], start_from=i+1)
